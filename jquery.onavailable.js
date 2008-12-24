@@ -33,7 +33,7 @@
         el = [el];
       }
       
-      // Validate callback
+      // Validate typeof callback
       if (typeof callback !== 'function') {
         throw new TypeError();
       }
@@ -43,7 +43,8 @@
       var checkContent = !!arguments[4];
       
       // Push listeners onto the stack
-      var listeners = self.listeners;      
+      var listeners = self.listeners;     
+       
       $.each(el, function(i, id) {
         listeners.push({
           id:           id,
@@ -102,7 +103,7 @@
     
     
     /**
-     * setInterval object
+     * setInterval timer
      */
     interval: null,
     
@@ -116,24 +117,31 @@
     /**
      * Fires the callback method of the listener in its proper scope
      *
-     * @method executeListener
+     * @method executeCallback
      * @param {DOMElement} el The discovered element
      * @param {Object} listener The listener object
      * @return {void}
      */
-    executeListener: function(el, listener) {
-      // Resolve scope (the value for the this keyword in the callback)
+    executeCallback: function(el, listener) {
+
+      // Resolve the scope of the callback
+      // (set the value of the "this" keyword inside the callback)
       var scope = el;
+
       if (listener.override) {
-        // Override the scope with obj
         if (listener.override === true) {
+
+          // Override the scope with obj
           scope = listener.obj;
+          
         } else {
+
           // Override the scope with override
           scope = listener.override;
         }
       }
-      // Execute the callback
+      
+      // Fire the listener's callback function
       listener.callback.call(scope, listener.obj);
     },
 
@@ -162,12 +170,12 @@
           // and remove the listener from the stack
           if (el && (!listener.checkContent || $.isReady || el.nextSibling)) {
             listeners.splice(i, 1);
-            self.executeListener(el, listener);
+            self.executeCallback(el, listener);
           }
 
           // Clear interval if all listeners have been executed
           // or the retry limit has been reached
-          if (listeners.length == 0 || --self.POLL_RETRIES == 0) {
+          if (listeners.length === 0 || --self.POLL_RETRIES === 0) {
             self.interval = window.clearInterval(self.interval);
           }
         }
