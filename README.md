@@ -5,13 +5,14 @@ A plugin for the [jQuery JavaScript framework](http://jquery.com) which adds two
 *Thanks to [YUI's Event.onAvailable and Event.onContentReady](http://developer.yahoo.com/yui/event/#onavailable) and [Bennett McElwee's $.elementReady](http://www.thunderguy.com/semicolon/2007/08/14/elementready-jquery-plugin/) for inspiration (and code (and documentation)).*
 
 
-## Installation & Usage
-1. Add jQuery and the onAvailable plugin to the top of your HTML document.
+## Quick Start: Installation & Usage
+
+Add jQuery and the onAvailable plugin to the <head> of your HTML document.
 
     <script src="path/to/jquery/jquery.js" type="text/javascript"></script>
     <script src="path/to/onavailable/jquery.onavailable.pack.js" type="text/javascript"></script>
 
-1. Add your
+Add your detection code the <head> of your document.
 
     <script type="text/javascript"> 
 
@@ -23,6 +24,16 @@ A plugin for the [jQuery JavaScript framework](http://jquery.com) which adds two
     
     </script>
 
-1. Add the markup to the page
+Add the markup to <body> of your document.
     
     <div id="myelementid">my element</div> 
+
+## Advanced
+
+The onAvailable method takes four parameters: two required and *two optional*.
+
+1. **el** An element ID (or an array of element IDs)
+2. **callback** The function to execute when the element is detected
+3. ***obj*** An object to pass as a parameter to the callback method
+4. ***override*** Either a boolean (true) or another object. If true, the callback will execute in the scope of *obj*, meaning the **this** keyword will refer to *obj* inside the callback. If an object, the callback will execute in the scope of *override*, meaning the **this** keyword will refer to *override* inside the callback.
+
