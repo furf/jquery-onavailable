@@ -1,22 +1,27 @@
-$.onAvailable and $.onContentReady
+# $.onAvailable and $.onContentReady
 
-Two new DOM events for jQuery which allow the retrieval of DOM nodes before the DOM has finished loading.
+A plugin for the [http://jquery.com](jQuery JavaScript framework) which adds two useful DOM events - onAvailable and onContentReady - to allow retrieval of DOM nodes before the DOM has finished loading. These methods help you enable advanced functionality while keeping your markup clean and unobtruded.
 
-Installation
-------------
+*Thanks to Yahoo! for YUI's Event.onAvailable and Event.onContentReady and Bennett McElwee's $.elementReady for inspiration.*
+
+
+## Installation
 
 Add the script to the top of your HTML document.
 
     <script src="path/to/script/jquery.onavailable.pack.js" type="text/javascript"></script>
     
-Usage
------
+## Usage
 
-    <a href="http://furf.com">Go to furf.com</a>
+    <a href="pretty.jpg"><img src="pretty_thumb.jpg"/></a>
 
 
     $.onAvailable('foo', function() {
-    
-      return confirm('Are you sure you want to go there?')'
+
+      $(this).onclick(function() {
+
+        var src = this.href;
+        
+      });
           
     });
