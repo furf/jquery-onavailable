@@ -1,5 +1,9 @@
+/**
+ * 
+ * @author Dave Furfero <furf@furf.com>
+ * @version 1.0
+ */
 (function($) {
-
   $.extend({
 
 
@@ -168,9 +172,17 @@
           // If element is found and we don't need to check children (onAvailable) 
           // or DOM is loaded or nextSibling is loaded, then execute the callback
           // and remove the listener from the stack
-          if (el && (!listener.checkContent || $.isReady || el.nextSibling)) {
-            listeners.splice(i, 1);
-            self.executeCallback(el, listener);
+
+          if (el) {
+            if (listener.checkContent) {
+              if ($.isReady || el.nextSibling) {
+                listeners.splice(i, 1);
+                self.executeCallback(el, listener);
+              }
+            } else {
+              listeners.splice(i, 1);
+              self.executeCallback(el, listener);
+            }
           }
 
           // Clear interval if all listeners have been executed
