@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @author Dave Furfero <furf@furf.com>
  * @version 1.0
  */
@@ -36,19 +36,19 @@
       if (!(el instanceof Array)) {
         el = [el];
       }
-      
+
       // Validate typeof callback
       if (typeof callback !== 'function') {
         throw new TypeError();
       }
-            
+
       var obj          = arguments[2];
       var override     = arguments[3];
       var checkContent = !!arguments[4];
-      
+
       // Push listeners onto the stack
-      var listeners = self.listeners;     
-       
+      var listeners = self.listeners;
+
       $.each(el, function(i, id) {
         listeners.push({
           id:           id,
@@ -56,14 +56,14 @@
           obj:          obj,
           override:     override,
           checkContent: checkContent
-        });        
+        });
       });
-      
+
       // Begin polling for DOM elements
       if (!self.interval) {
         self.interval = window.setInterval(self.checkAvailable, self.POLL_INTERVAL);
       }
-      
+
       return this;
     },
 
@@ -88,9 +88,9 @@
     onContentReady: function(el, callback, obj, override) {
       $.onAvailable(el, callback, obj, override, true);
     }
-    
+
   });
-  
+
   $.extend($.onAvailable, {
 
 
@@ -104,14 +104,14 @@
      * Milliseconds between retries
      */
     POLL_INTERVAL: 20,
-    
-    
+
+
     /**
      * setInterval timer
      */
     interval: null,
-    
-    
+
+
     /**
      * Array of listeners
      */
@@ -137,21 +137,21 @@
 
           // Override the scope with obj
           scope = listener.obj;
-          
+
         } else {
 
           // Override the scope with override
           scope = listener.override;
         }
       }
-      
+
       // Fire the listener's callback function
       listener.callback.call(scope, listener.obj);
     },
 
 
     /**
-     * Polls the DOM for an element matching the supplied id and fires the 
+     * Polls the DOM for an element matching the supplied id and fires the
      * associated callback method
      *
      * @method checkAvailable
@@ -169,7 +169,7 @@
           // Attempt to find the element in the DOM
           var el = document.getElementById(listener.id);
 
-          // If element is found and we don't need to check children (onAvailable) 
+          // If element is found and we don't need to check children (onAvailable)
           // or DOM is loaded or nextSibling is loaded, then execute the callback
           // and remove the listener from the stack
 
@@ -193,6 +193,6 @@
         }
       });
     }
-  });  
-  
+  });
+
 })(jQuery);
