@@ -4,7 +4,7 @@
     /**
      * NOTE: If element is last the child of its parent node, include at 
      * least one character of whitespace or onContentReady will not fire
-     * until DOMReady
+     * until DOMReady.
      */      
 
     /**
@@ -189,7 +189,8 @@
          * $.onAvailable listeners. If the DOM is ready or the next sibling
          * is detected, execute callbacks for all $.onContentReady listeners.
          */          
-        if (el && (!listener.checkContent || (listener.checkContent && ($.isReady || el.nextSibling)))) {
+        if (el && (!listener.checkContent || (listener.checkContent &&
+          (el.nextSibling || el.parentNode.nextSibling || $.isReady)))) {
 
           _this.executeCallback(el, listener);
 
