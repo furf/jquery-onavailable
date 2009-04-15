@@ -1,6 +1,11 @@
 (function($) {
   $.extend({
 
+    /**
+     * NOTE: If element is last the child of its parent node, include at 
+     * least one character of whitespace or onContentReady will not fire
+     * until DOMReady
+     */      
 
     /**
      * Executes the supplied callback when the item with the supplied
