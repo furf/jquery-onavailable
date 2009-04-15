@@ -1,8 +1,3 @@
-/**
- *
- * @author Dave Furfero <furf@furf.com>
- * @version 1.0
- */
 (function($) {
   $.extend({
 
@@ -31,37 +26,40 @@
      */
     onAvailable: function(el, callback /*, obj, override, checkContent */) {
 
-      var self = $.onAvailable;
-
-      if (!(el instanceof Array)) {
-        el = [el];
-      }
-
-      // Validate typeof callback
+      /**
+       * Validate callback
+       */
       if (typeof callback !== 'function') {
         throw new TypeError();
       }
 
-      var obj          = arguments[2];
-      var override     = arguments[3];
-      var checkContent = !!arguments[4];
+      var _this = $.onAvailable;
 
-      // Push listeners onto the stack
-      var listeners = self.listeners;
+      /**
+       * Wrap single element in array
+       */
+      if (!(el instanceof Array)) {
+        el = [el];
+      }
 
-      $.each(el, function(i, id) {
-        listeners.push({
-          id:           id,
+      /**
+       * Push listeners onto the stack
+       */
+      for (var i = 0, n = el.length; i < n; ++i) {
+        _this.listeners.push({
+          id:           el[i],
           callback:     callback,
-          obj:          obj,
-          override:     override,
-          checkContent: checkContent
+          obj:          arguments[2],
+          override:     arguments[3],
+          checkContent: !!arguments[4]
         });
-      });
+      }
 
-      // Begin polling for DOM elements
-      if (!self.interval) {
-        self.interval = window.setInterval(self.checkAvailable, self.POLL_INTERVAL);
+      /**
+       * Begin polling for DOM elements
+       */
+      if (!_this.interval) {
+        _this.interval = window.setInterval(_this.checkAvailable, _this.POLL_INTERVAL);
       }
 
       return this;
@@ -128,24 +126,31 @@
      */
     executeCallback: function(el, listener) {
 
-      // Resolve the scope of the callback
-      // (set the value of the "this" keyword inside the callback)
+      /**
+       * Resolve the scope of the callback (the DOM element is the default)
+       */
       var scope = el;
 
       if (listener.override) {
         if (listener.override === true) {
 
-          // Override the scope with obj
+          /**
+           * Override the scope with obj
+           */
           scope = listener.obj;
 
         } else {
 
-          // Override the scope with override
+          /**
+           * Override the scope with the value of override
+           */
           scope = listener.override;
         }
       }
 
-      // Fire the listener's callback function
+      /**
+       * Fire the listener's callback function
+       */
       listener.callback.call(scope, listener.obj);
     },
 
@@ -159,39 +164,50 @@
      */
     checkAvailable: function() {
 
-      var self = $.onAvailable;
-      var listeners = self.listeners;
+      var _this = $.onAvailable;
+      var listeners = _this.listeners;
 
-      // Iterate through listener stack
-      $.each(listeners, function(i, listener) {
-        if (listener) {
+      /**
+       * Iterate through listener stack
+       */
+      for (var i = 0; i < listeners.length; ++i) {
 
-          // Attempt to find the element in the DOM
-          var el = document.getElementById(listener.id);
+        var listener = listeners[i];
 
-          // If element is found and we don't need to check children (onAvailable)
-          // or DOM is loaded or nextSibling is loaded, then execute the callback
-          // and remove the listener from the stack
+        /**
+         * Attempt to find the specified element in the DOM
+         */
+        var el = document.getElementById(listener.id);
 
-          if (el) {
-            if (listener.checkContent) {
-              if ($.isReady || el.nextSibling) {
-                listeners.splice(i, 1);
-                self.executeCallback(el, listener);
-              }
-            } else {
-              listeners.splice(i, 1);
-              self.executeCallback(el, listener);
-            }
-          }
+        /**
+         * If the DOM element is found, execute callbacks for all related
+         * $.onAvailable listeners. If the DOM is ready or the next sibling
+         * is detected, execute callbacks for all $.onContentReady listeners.
+         */          
+        if (el && (!listener.checkContent || (listener.checkContent && ($.isReady || el.nextSibling)))) {
 
-          // Clear interval if all listeners have been executed
-          // or the retry limit has been reached
-          if (listeners.length === 0 || --self.POLL_RETRIES === 0) {
-            self.interval = window.clearInterval(self.interval);
-          }
+          _this.executeCallback(el, listener);
+
+          /**
+           * Remove the listener from the stack
+           */
+          listeners.splice(i, 1);
+          
+          /**
+           *  Decrement the pointer to compensate for the spliced listener
+           */
+          --i;
         }
-      });
+
+        /**
+         * If all listeners have been executed or the retry limit has been
+         * reached, clear the interval.
+         */
+        if (listeners.length === 0 || --_this.POLL_RETRIES === 0) {
+          _this.interval = window.clearInterval(_this.interval);
+        }
+          
+      }
     }
   });
 
