@@ -182,7 +182,7 @@
         /**
          * Attempt to find the specified element in the DOM
          */
-        var el = document.getElementById(listener.id);
+        var el = $(listener.id);
 
         /**
          * If the DOM element is found, execute callbacks for all related
